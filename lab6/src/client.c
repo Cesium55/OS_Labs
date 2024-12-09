@@ -22,11 +22,6 @@
 
 #include "common.h" // Подключаем общий файл с MultModulo и структурой Server
 
-
-
-
-
-
 struct ThreadData {
     struct Server server;
     uint64_t begin;
@@ -147,6 +142,10 @@ int main(int argc, char **argv) {
         servers_num++;
     }
     fclose(file);
+
+    if (servers_num > k){
+      servers_num = k;
+    }
 
     // Разделяем диапазон работы между серверами
     pthread_t threads[servers_num];

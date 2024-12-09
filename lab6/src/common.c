@@ -3,22 +3,35 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-uint64_t MultModulo(uint64_t a, uint64_t b, uint64_t mod) {
+uint64_t MultModulo(uint64_t a, uint64_t b, uint64_t mod)
+{
+    printf("MultModulo exec; args: %lu %lu %lu\n", a, b, mod);
     uint64_t result = 0;
     a = a % mod;
-    while (b > 0) {
+    while (b > 0)
+    {
         if (b % 2 == 1)
             result = (result + a) % mod;
         a = (a * 2) % mod;
         b /= 2;
     }
+
+    printf("MultModulo result %lu\n", result % mod);
+
     return result % mod;
 }
 
-bool ConvertStringToUI64(const char *str, uint64_t *val) {
+
+
+
+
+
+bool ConvertStringToUI64(const char *str, uint64_t *val)
+{
     char *end = NULL;
     unsigned long long i = strtoull(str, &end, 10);
-    if (errno == ERANGE) {
+    if (errno == ERANGE)
+    {
         fprintf(stderr, "Out of uint64_t range: %s\n", str);
         return false;
     }

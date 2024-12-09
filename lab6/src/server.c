@@ -22,6 +22,7 @@
 
 #include "common.h" // Подключаем общий файл с MultModulo и структурой Server
 
+
 struct FactorialArgs {
     uint64_t begin;
     uint64_t end;
@@ -145,15 +146,35 @@ int main(int argc, char **argv) {
 
         printf("Received task: %llu-%llu mod %llu\n", begin, end, mod);
 
-        pthread_t threads[tnum];
-        struct FactorialArgs args[tnum];
-        uint64_t range = (end - begin + 1) / tnum;
-        uint64_t remainder = (end - begin + 1) % tnum;
 
-        for (int i = 0; i < tnum; i++) {
+        uint64_t range_length = (end - begin + 1);
+        int temp_tnum;
+        if (tnum>range_length){
+          temp_tnum = range_length;
+        }
+        else{
+          temp_tnum = tnum;
+        }
+
+
+
+        uint64_t range = range_length / temp_tnum;
+
+        pthread_t threads[temp_tnum];
+        struct FactorialArgs args[temp_tnum];
+
+        uint64_t remainder = range_length % temp_tnum;
+
+
+
+        
+        
+
+
+        for (int i = 0; i < temp_tnum; i++) {
             args[i].begin = begin + i * range;
-            args[i].end = (i == tnum - 1) ? end : args[i].begin + range - 1;
-            if (i == tnum - 1 && remainder) args[i].end += remainder;
+            args[i].end = (i == temp_tnum - 1) ? end : args[i].begin + range - 1;
+            if (i == temp_tnum - 1 && remainder) args[i].end += remainder;
             args[i].mod = mod;
 
             if (pthread_create(&threads[i], NULL, ThreadFactorial, (void *)&args[i]) != 0) {
@@ -165,7 +186,7 @@ int main(int argc, char **argv) {
         }
 
         uint64_t total_result = 1;
-        for (int i = 0; i < tnum; i++) {
+        for (int i = 0; i < temp_tnum; i++) {
             uint64_t *thread_result;
             pthread_join(threads[i], (void **)&thread_result);
             total_result = MultModulo(total_result, *thread_result, mod);
